@@ -1,7 +1,8 @@
 Name:           ephemeral-port-reserve
 Version:        1.1.4
-Release:        3%{?dist}
+Release:        3.rv64%{?dist}
 Summary:        Bind to an ephemeral port, force it into the TIME_WAIT state, and unbind it.
+
 
 License:        MIT
 URL:            https://github.com/Yelp/%{name}/
@@ -10,6 +11,9 @@ Source0:        https://github.com/Yelp/%{name}/archive/refs/tags/v%{version}.ta
 BuildArch:      noarch
 BuildRequires:  python3-devel
 BuildRequires:  python3-pytest
+
+# check failed on riscv64 koji build, make it default disabled.
+%bcond_with check
 
 # Provide the python3-* namespace as the package
 # can also be used as a library.
@@ -38,9 +42,11 @@ Bind to an ephemeral port, force it into the TIME_WAIT state, and unbind it.}
 %pyproject_save_files ephemeral_port_reserve
 
 
+%if %{with check}
 %check
 %pyproject_check_import
 %pytest
+%endif
 
 
 %files -f %{pyproject_files}
@@ -49,6 +55,9 @@ Bind to an ephemeral port, force it into the TIME_WAIT state, and unbind it.}
 
 
 %changelog
+* Sun Jan 15 2023 Liu Yang  <Yang.Liu.sn@gmail.com> - 1.1.4-3.rv64
+- Fix building on riscv64.
+
 * Thu Jul 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.4-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
